@@ -8,9 +8,12 @@
   ],
   "license": "ISC",
   "author": "Suprathik Joshua",
-  "type": "commonjs",
+  "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon src/index.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0"
   }
 }
