@@ -198,9 +198,67 @@ const refreshAccessToken = asyncHandlers(async (req,res)=>{
     }
 })
 
+const changePassword = asyncHandlers(async (req,res)=>{
+    const {oldPass,newPass} = req.body;
+
+    const user = await User.findById(req.user?._id);
+    const isPasswordCorrect= isPasswordCorrect(oldPass);
+
+    if (!isPasswordCorrect) {
+        throw new ApiError(400,"Invalid password")
+    }
+
+    user.password = newPass;
+    await user.save({validateBeforeSave:false})
+
+    return res.status(200).json(new ApiResponse(200,"Password updated successfully"))
+})
+
+const getCurrentUser = asyncHandlers(async(req,res)=>{
+    return res.status(200).json(new ApiResponse(200,{},"User fetched successfully"))
+})
+
+const updateAvatar = asyncHandlers(async(req,res)=>{
+    const avatarLocalPath = req.file?.path;
+
+    if (!avatarLocalPath) {
+        throw new ApiError(400,"Avatar file missing");
+    }
+
+    const avatar = uploadOnCloudinary(avatarLocalPath)
+
+    if (!avatar) {
+        throw new ApiError(400,"Error while uploading on cloudinary");
+    }
+
+    const user = await User.findByIdAndUpdate(req.user?._id,{$set:{avatar:avatar.url}},{new:true}).select("-password");
+    return res.status(200).json(new ApiResponse(200,user,"Avatar changed succesfully"))
+})
+
+const updateCoverImage = asyncHandlers(async(req,res)=>{
+    const coverImageLocalPath = req.file?.path;
+
+    if (!coverImageLocalPath) {
+        throw new ApiError(400,"coverImage file missing");
+    }
+
+    const coverImage = uploadOnCloudinary(coverImageLocalPath)
+
+    if (!coverImage) {
+        throw new ApiError(400,"Error while uploading on cloudinary");
+    }
+
+    const user = await User.findByIdAndUpdate(req.user?._id,{$set:{coverImage:coverImage.url}},{new:true}).select("-password");
+    return res.status(200).json(new ApiResponse(200,user,"Cover Image changed succesfully"))
+})
+
 export {
     registerUser,
     loginUser,
     logoutUser,
-    refreshAccessToken
+    refreshAccessToken,
+    changePassword,
+    getCurrentUser,
+    updateAvatar,
+    updateCoverImage
 }
