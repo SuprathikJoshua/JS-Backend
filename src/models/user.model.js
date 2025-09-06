@@ -31,6 +31,10 @@ const userSchema = new mongoose.Schema({
     coverImage:{
         type:String,
     },
+    playlists:[{
+        type:Schema.Types.ObjectId,
+        ref:"Playlist"
+    }],
     watchHistory:[{
         type:Schema.Types.ObjectId,
         ref:"Video"
