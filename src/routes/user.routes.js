@@ -22,4 +22,17 @@ router.route("/logout").post(verifyJWT,logoutUser)
 
 router.route("/refresh-token").post(refreshAccessToken)
 
+router.route("/change-password").post(verifyJWT,changePassword)
+
+router.route("/get-current-user").post(verifyJWT,getCurrentUser)
+
+router.route("/update-avatar").patch(verifyJWT,upload.single("avatar"),updateAvatar)
+
+router.route("/update-cover-image").patch(verifyJWT,upload.single("coverImage"),updateCoverImage)
+
+router.route("/channel/:username").get(verifyJWT,getChannelProifle)
+
+router.route("/history").get(verifyJWT,getWatchHistory)
+
+
 export default router
